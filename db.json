@@ -1,0 +1,16 @@
+{
+	"users": [
+		{
+			"id": 1,
+			"login": "bektur",
+			"email": "w123.@gmail.com",
+			"password": "password123",
+			"prayers": [
+				{
+					"date": "Mon Jun 6 2024",
+					"prayer": "Fajr"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,43 @@
+@import 'react-calendar/dist/Calendar.css';
+
+/* Переопределите стиль для текущего дня */
+.react-calendar__tile--now {
+	background: #76e6ff; /* Зеленый цвет фона */
+	color: #000; /* Цвет текста */
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+	background: #76e6ff; /* Цвет фона при наведении */
+}
+.calendar-tile-green {
+	background-color: #4caf50 !important; /* Зеленый цвет фона */
+	color: white !important; /* Белый цвет текста */
+}
+.calendar-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+}
+
+/* Стили для модального окна */
+.modal-content {
+	background-color: white;
+	padding: 20px;
+	border-radius: 8px;
+	max-width: 90%;
+	margin: auto;
+}
+
+/* Медиа-запрос для планшетов и мобильных устройств */
+@media (max-width: 768px) {
+	.calendar-container {
+		padding: 10px;
+	}
+
+	.modal-content {
+		padding: 10px;
+		font-size: 14px;
+	}
+}
