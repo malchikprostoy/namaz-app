@@ -8,23 +8,27 @@ import { Box, IconButton, InputAdornment, Typography } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "../../features/AuthContext";
 import "./Form.css";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { login } = useAuth();
+  const navigate = useNavigate(); // Use this to navigate after login
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(""); // Add state to hold error messages
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event) => event.preventDefault();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await login(email, password);
+      navigate("/"); // Redirect to homepage or protected route after login
     } catch (error) {
-      console.error("Error logging in:", error);
+      setError(error.response?.data?.message || "Error logging in");
     }
   };
 
@@ -75,6 +79,11 @@ const Login = () => {
           >
             Login
           </Typography>
+          {error && (
+            <Typography color="error" style={{ marginBottom: "1rem" }}>
+              {error}
+            </Typography>
+          )}
           <TextField
             required
             id="standard-required"
@@ -152,12 +161,14 @@ const Login = () => {
           <Button
             variant="outlined"
             fullWidth
-            href="#text-buttons"
+            type="submit"
             style={{
               color: "black",
-              borderColor: "black",
+              border: "1px solid #000",
+              borderRadius: "5px",
               fontFamily: "Poppins",
               fontSize: 16,
+              background: "transparent",
             }}
           >
             Login

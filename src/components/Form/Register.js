@@ -6,25 +6,28 @@ import { Box, IconButton, InputAdornment, Typography } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "../../features/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const { register } = useAuth();
+  const navigate = useNavigate(); // Use this to navigate after registration
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(""); // Add state to hold error messages
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event) => event.preventDefault();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
       await register(name, email, password);
+      navigate("/"); // Redirect to login page after successful registration
     } catch (error) {
-      console.error("Error registering:", error);
+      setError(error.response?.data?.message || "Error registering");
     }
   };
 
@@ -75,6 +78,11 @@ const Register = () => {
           >
             Register
           </Typography>
+          {error && (
+            <Typography color="error" style={{ marginBottom: "1rem" }}>
+              {error}
+            </Typography>
+          )}
           <TextField
             required
             id="standard-required"
@@ -158,13 +166,15 @@ const Register = () => {
           <Button
             variant="outlined"
             fullWidth
-            href="#text-buttons"
+            type="submit"
             style={{
               color: "black",
+              border: "1px solid #000",
+              borderRadius: "5px",
               fontFamily: "Poppins",
-              marginTop: 20,
               fontSize: 16,
-              borderColor: "black",
+              marginTop: 20,
+              background: "transparent",
             }}
           >
             Register

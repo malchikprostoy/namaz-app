@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -14,7 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 app.use(cors());
 app.use(express.json());
 
-const dbUrl = "mongodb+srv://admin:admin@cluster0.dprph6h.mongodb.net/";
+const dbUrl = process.env.MONGO_URL;
 mongoose
   .connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected"))
@@ -89,7 +88,9 @@ const authenticateToken = (req, res, next) => {
   const token = req.headers["authorization"];
   if (!token) return res.status(401).send("Access Denied");
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
+  const bearerToken = token.split(" ")[1];
+
+  jwt.verify(bearerToken, JWT_SECRET, (err, user) => {
     if (err) return res.status(403).send("Invalid Token");
     req.user = user;
     next();

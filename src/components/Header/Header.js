@@ -1,6 +1,6 @@
 // Header.js
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
@@ -11,18 +11,27 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
+import { useAuth } from "../../features/AuthContext";
 import "./Header.css";
 import logo from "../../assets/img/logo.png";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Header = () => {
+  const { user, logout } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   };
 
   return (
@@ -44,7 +53,9 @@ const Header = () => {
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
             >
-              <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+              <Avatar sx={{ width: 32, height: 32 }}>
+                {user?.name?.charAt(0) || "U"}
+              </Avatar>
             </IconButton>
           </Tooltip>
         </Box>
@@ -60,25 +71,32 @@ const Header = () => {
           <MenuItem onClick={handleClose}>
             <Avatar /> Profile
           </MenuItem>
-          <MenuItem onClick={handleClose}>
-            <Link to="/login">
-              <Button variant="outlined" color="inherit">
-                Login
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button variant="outlined" color="inherit">
-                Register
-              </Button>
-            </Link>
-          </MenuItem>
           <Divider />
-          <MenuItem onClick={handleClose}>
-            <ListItemIcon>
-              <Logout fontSize="small" />
-            </ListItemIcon>
-            Logout
-          </MenuItem>
+          {user ? (
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <Logout fontSize="small" />
+              </ListItemIcon>
+              Logout
+            </MenuItem>
+          ) : (
+            <>
+              <MenuItem>
+                <Link to="/login">
+                  <Button variant="outlined" color="inherit">
+                    Login
+                  </Button>
+                </Link>
+              </MenuItem>
+              <MenuItem>
+                <Link to="/register">
+                  <Button variant="outlined" color="inherit">
+                    Register
+                  </Button>
+                </Link>
+              </MenuItem>
+            </>
+          )}
         </Menu>
       </div>
     </div>
