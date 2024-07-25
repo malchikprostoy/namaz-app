@@ -1,5 +1,5 @@
 // Header.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -11,16 +11,37 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
+import Profile from "../Profile/Profile";
 import { useAuth } from "../../features/AuthContext";
 import "./Header.css";
 import logo from "../../assets/img/logo.png";
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios";
 
 const Header = () => {
   const { user, logout } = useAuth();
+  const { setUser } = useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:5000/api/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUser(res.data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -53,9 +74,13 @@ const Header = () => {
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
             >
-              <Avatar sx={{ width: 32, height: 32 }}>
-                {user?.name?.charAt(0) || "U"}
-              </Avatar>
+              {user.photo && (
+                <Avatar
+                  src={user.photo}
+                  alt="Profile Photo"
+                  sx={{ height: 100, width: 100 }}
+                />
+              )}
             </IconButton>
           </Tooltip>
         </Box>
@@ -68,8 +93,8 @@ const Header = () => {
           transformOrigin={{ horizontal: "right", vertical: "top" }}
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
-          <MenuItem onClick={handleClose}>
-            <Avatar /> Profile
+          <MenuItem>
+            <Profile />
           </MenuItem>
           <Divider />
           {user ? (

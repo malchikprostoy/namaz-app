@@ -2,46 +2,77 @@ import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
-import { Box, IconButton, InputAdornment, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  IconButton,
+  InputAdornment,
+  styled,
+  Typography,
+} from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useAuth } from "../../features/AuthContext";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  const { register } = useAuth();
-  const navigate = useNavigate(); // Use this to navigate after registration
-
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(""); // Add state to hold error messages
+  const [error] = useState("");
+  const [photo, setPhoto] = useState(null);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => event.preventDefault();
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+    if (photo) formData.append("photo", photo);
+
     try {
-      await register(name, email, password);
-      navigate("/"); // Redirect to login page after successful registration
+      await axios.post("http://localhost:5000/api/register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      navigate("/");
     } catch (error) {
-      setError(error.response?.data?.message || "Error registering");
+      console.error(
+        "Error registering:",
+        error.response?.data || error.message
+      );
     }
   };
 
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
   const inputStyles = {
     "&:before": {
-      borderBottomColor: "black", // normal state
+      borderBottomColor: "black",
       transition: "border-color 0.3s ease",
     },
     "&:after": {
-      borderBottomColor: "black", // focused state
+      borderBottomColor: "black",
       transition: "border-color 0.3s ease",
     },
     "&:hover:not(.Mui-disabled):before": {
-      borderBottomColor: "black", // hover state
+      borderBottomColor: "black",
       transition: "border-color 0.3s ease",
     },
     input: {
@@ -59,7 +90,7 @@ const Register = () => {
     color: "black",
     transition: "color 0.3s ease",
     "&.Mui-focused": {
-      color: "black", // focused label color
+      color: "black",
       transition: "color 0.3s ease",
     },
   };
@@ -70,7 +101,7 @@ const Register = () => {
         <Box
           component="form"
           autoComplete="off"
-          noValidateaction=""
+          noValidate
           onSubmit={handleRegister}
         >
           <Typography
@@ -79,9 +110,13 @@ const Register = () => {
             Register
           </Typography>
           {error && (
-            <Typography color="error" style={{ marginBottom: "1rem" }}>
+            <Alert
+              severity="error"
+              color="error"
+              style={{ marginBottom: "1rem", background: "transparent" }}
+            >
               {error}
-            </Typography>
+            </Alert>
           )}
           <TextField
             required
@@ -149,9 +184,7 @@ const Register = () => {
           />
           <Button
             component="label"
-            role={undefined}
             variant="outlined"
-            tabIndex={-1}
             startIcon={<CloudUploadIcon />}
             style={{
               fontFamily: "Poppins",
@@ -161,7 +194,12 @@ const Register = () => {
               borderColor: "black",
             }}
           >
-            Upload file
+            Upload photo
+            <VisuallyHiddenInput
+              type="file"
+              accept="image/*"
+              onChange={(e) => setPhoto(e.target.files[0])}
+            />
           </Button>
           <Button
             variant="outlined"

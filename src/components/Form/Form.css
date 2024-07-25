@@ -34,22 +34,3 @@
     color: #333;
     font-weight: 700;
 }
-
-.custom-textfield .MuiInputBase-root::before,
-.custom-textfield .MuiInputBase-root::after {
-    border-bottom-color: white;
-    /* Adjust as needed */
-}
-
-.custom-textfield .MuiInputBase-input {
-    background-color: transparent !important;
-    color: white;
-    /* Adjust as needed */
-    transition: color 0.3s ease;
-}
-
-.custom-textfield .MuiInputLabel-root {
-    color: white;
-    /* Adjust as needed */
-    transition: color 0.3s ease;
-}

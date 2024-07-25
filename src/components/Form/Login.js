@@ -4,7 +4,13 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Button from "@mui/material/Button";
-import { Box, IconButton, InputAdornment, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  IconButton,
+  InputAdornment,
+  Typography,
+} from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useAuth } from "../../features/AuthContext";
 import "./Form.css";
@@ -80,9 +86,13 @@ const Login = () => {
             Login
           </Typography>
           {error && (
-            <Typography color="error" style={{ marginBottom: "1rem" }}>
+            <Alert
+              severity="error"
+              color="error"
+              style={{ marginBottom: "1rem", background: "transparent" }}
+            >
               {error}
-            </Typography>
+            </Alert>
           )}
           <TextField
             required
