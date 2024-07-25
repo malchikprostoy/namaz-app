@@ -32,16 +32,6 @@ const Header = () => {
         <h2>NAMAZ-APP</h2>
       </div>
       <div className="header_right d-flex align-items-center gap-2">
-        <Link to="/login">
-          <Button variant="outlined" color="inherit">
-            Login
-          </Button>
-        </Link>
-        <Link to="/register">
-          <Button variant="outlined" color="inherit">
-            Register
-          </Button>
-        </Link>
         <Box
           sx={{ display: "flex", alignItems: "center", textAlign: "center" }}
         >
@@ -69,6 +59,18 @@ const Header = () => {
         >
           <MenuItem onClick={handleClose}>
             <Avatar /> Profile
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <Link to="/login">
+              <Button variant="outlined" color="inherit">
+                Login
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button variant="outlined" color="inherit">
+                Register
+              </Button>
+            </Link>
           </MenuItem>
           <Divider />
           <MenuItem onClick={handleClose}>

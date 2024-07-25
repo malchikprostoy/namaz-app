@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import { AuthProvider } from "./features/AuthContext";
 import "./App.css";
-import Form from "./components/Form/Form";
+import Register from "./components/Form/Register";
+import Login from "./components/Form/Login";
 
 function App() {
   return (
@@ -13,7 +14,8 @@ function App() {
         <div className="App">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Form />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </div>
       </Router>
