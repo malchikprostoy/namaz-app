@@ -19,9 +19,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 
 const Header = () => {
-  const { user, logout } = useAuth();
-  const { setUser } = useState(null);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const { logout } = useAuth();
+  const [user, setUser] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
 
@@ -29,6 +29,11 @@ const Header = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        if (!token) {
+          console.error("No token found");
+          return;
+        }
         const res = await axios.get("http://localhost:5000/api/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,12 +79,16 @@ const Header = () => {
               aria-haspopup="true"
               aria-expanded={open ? "true" : undefined}
             >
-              {user.photo && (
+              {user && user.photo ? (
                 <Avatar
                   src={user.photo}
                   alt="Profile Photo"
                   sx={{ height: 100, width: 100 }}
                 />
+              ) : (
+                <Avatar sx={{ height: 100, width: 100 }}>
+                  {user ? user.name[0] : "?"}
+                </Avatar>
               )}
             </IconButton>
           </Tooltip>
@@ -97,31 +106,31 @@ const Header = () => {
             <Profile />
           </MenuItem>
           <Divider />
-          {user ? (
-            <MenuItem onClick={handleLogout}>
-              <ListItemIcon>
-                <Logout fontSize="small" />
-              </ListItemIcon>
-              Logout
-            </MenuItem>
-          ) : (
-            <>
-              <MenuItem>
-                <Link to="/login">
-                  <Button variant="outlined" color="inherit">
-                    Login
-                  </Button>
-                </Link>
-              </MenuItem>
-              <MenuItem>
-                <Link to="/register">
-                  <Button variant="outlined" color="inherit">
-                    Register
-                  </Button>
-                </Link>
-              </MenuItem>
-            </>
-          )}
+          {user
+            ? [
+                <MenuItem onClick={handleLogout} key="logout">
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>,
+              ]
+            : [
+                <MenuItem key="login">
+                  <Link to="/login">
+                    <Button variant="outlined" color="inherit">
+                      Login
+                    </Button>
+                  </Link>
+                </MenuItem>,
+                <MenuItem key="register">
+                  <Link to="/register">
+                    <Button variant="outlined" color="inherit">
+                      Register
+                    </Button>
+                  </Link>
+                </MenuItem>,
+              ]}
         </Menu>
       </div>
     </div>

@@ -14,14 +14,16 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../features/AuthContext";
 
 const Register = () => {
+  const { setUser } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error] = useState("");
+  const [error, setError] = useState("");
   const [photo, setPhoto] = useState(null);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -36,17 +38,41 @@ const Register = () => {
     if (photo) formData.append("photo", photo);
 
     try {
-      await axios.post("http://localhost:5000/api/register", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/register",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      // Сохранение токена в localStorage
+      const token = response.data.token;
+      if (token) {
+        localStorage.setItem("token", token);
+        const profileResponse = await axios.get(
+          "http://localhost:5000/api/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Обновление состояния пользователя
+        setUser(profileResponse.data);
+      }
+
+      // Перенаправление на домашнюю страницу
       navigate("/");
     } catch (error) {
       console.error(
         "Error registering:",
         error.response?.data || error.message
       );
+      setError(error.response?.data?.message || "Registration failed");
     }
   };
 

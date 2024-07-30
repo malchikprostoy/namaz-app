@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Avatar from "@mui/material/Avatar";
 import { Alert, Typography } from "@mui/material";
 
 const Profile = () => {
@@ -10,6 +9,11 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token");
+        console.log("Token:", token);
+        if (!token) {
+          console.error("No token found");
+          return;
+        }
         const res = await axios.get("http://localhost:5000/api/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -28,7 +32,6 @@ const Profile = () => {
 
   return (
     <div>
-      <Typography variant="h4">Profile</Typography>
       <Typography>Name: {user.name}</Typography>
     </div>
   );
