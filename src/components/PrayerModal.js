@@ -1,4 +1,3 @@
-// PrayerModal.js
 import React from "react";
 import Modal from "react-modal";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +22,7 @@ const customStyles = {
 const PrayerModal = ({ date, isOpen, onRequestClose }) => {
   const dispatch = useDispatch();
   const prayers = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
-  const markedPrayers = useSelector((state) => state.prayers[date] || {}); // Выбираем данные молитв для определенной даты из Redux store
+  const markedPrayers = useSelector((state) => state.prayers[date] || {});
 
   const handleMarkPrayer = (prayer) => {
     dispatch(markPrayer({ date, prayer }));
